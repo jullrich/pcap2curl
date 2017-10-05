@@ -5,7 +5,7 @@ from scapy.all import *
 
 
 if len(sys.argv) != 2:
-  print "I need an input file. Usage ./pcap2curl.py inputfilename"
+  print ("I need an input file. Usage ./pcap2curl.py inputfilename")
   exit()
 
 infile = sys.argv[1]
@@ -40,4 +40,4 @@ for p in packets:
   payload=''
   if p.haslayer(TCP) and p.haslayer(Raw) and  p[TCP].dport == 80:
     payload=p[Raw].load
-    print payload2curl(payload)
+    print (payload2curl(payload))
