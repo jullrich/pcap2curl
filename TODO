@@ -1,0 +1,6 @@
+- session reassembly
+- make the matches for things like "Host" more forgiving, at least case insensitive
+- allow for HTTP traffic not on port 80
+- only allow valid "Methods"
+- better URL validation
+- Escape single quotes
