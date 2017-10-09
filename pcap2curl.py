@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import sys
-from scapy.all import rdpcap, re, Raw, TCP
+from scapy.all import PcapReader, re, Raw, TCP
 
 
 def payload2curl(p):
@@ -33,12 +33,13 @@ def main():
         return
 
     infile = sys.argv[1]
-    packets = rdpcap(infile)
 
-    for p in packets:
-        if p.haslayer(TCP) and p.haslayer(Raw) and p[TCP].dport == 80:
-            payload = p[Raw].load
-            print(payload2curl(payload))
+    with PcapReader(infile) as packets:
+        for p in packets:
+            if p.haslayer(TCP) and p.haslayer(Raw) and p[TCP].dport == 80:
+                payload = p[Raw].load
+                print(payload2curl(payload))
+
 
 if __name__ == "__main__":
     main()
