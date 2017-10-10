@@ -20,10 +20,11 @@ def payload2curl(p):
             host_header = re.search("^Host: (.*)", line)
             host_name = host_header.group(1)
 
-    if host_name not in url:
-        url = "http://{}/{}".format(host_name, url)
-    curl = "curl '{}' \\\n -X {} \\\n".format(url, method)
-    curl += " \\\n".join(headers)
+    proto_host = 'http://{}/'.format(host_name)
+    if not url.startswith(proto_host):
+        url = "{}{}".format(proto_host, url[1:] if url[0] == "/" else url)
+    curl = "curl '{}' \\\n -X {} \\\n ".format(url, method)
+    curl += " \\\n ".join(headers)
     return curl
 
 
