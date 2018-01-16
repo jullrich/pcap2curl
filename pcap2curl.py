@@ -4,12 +4,28 @@ import sys
 from scapy.all import PcapReader, re, Raw, TCP
 
 
+VALID_METHODS = [
+    "GET",
+    "HEAD",
+    "POST",
+    "PUT",
+    "DELETE",
+    "CONNECT",
+    "OPTIONS",
+    "TRACE",
+    "PATCH"
+]  # see https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods
+
+
 def payload2curl(p):
     lines = re.compile("[\n\r]+").split(p.decode())
     start_line = re.search("^([A-Z]+) ([^ ]+) (HTTP\/[0-9\/]+)", lines[0])
     method = start_line.group(1)
     url = start_line.group(2)
     version = start_line.group(3)  # Never used
+
+    if method not in VALID_METHODS:
+        return
 
     del lines[0]
     headers = []
@@ -39,7 +55,9 @@ def main():
         for p in packets:
             if p.haslayer(TCP) and p.haslayer(Raw) and p[TCP].dport == 80:
                 payload = p[Raw].load
-                print(payload2curl(payload))
+                cmd = payload2curl(payload)
+                if cmd:
+                    print(cmd)
 
 
 if __name__ == "__main__":
