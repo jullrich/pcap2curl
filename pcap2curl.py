@@ -45,15 +45,16 @@ def payload2curl(p):
 
 
 def main():
-    if len(sys.argv) != 2:
-        print ("I need an input file. Usage ./pcap2curl.py inputfilename")
+    if len(sys.argv) < 3:
+        print ("I need an input file. Usage ./pcap2curl.py inputfilename port")
         return
 
     infile = sys.argv[1]
+    thePort = int(sys.argv[2])
 
     with PcapReader(infile) as packets:
         for p in packets:
-            if p.haslayer(TCP) and p.haslayer(Raw) and p[TCP].dport == 80:
+            if p.haslayer(TCP) and p.haslayer(Raw) and p[TCP].dport == thePort:
                 payload = p[Raw].load
                 cmd = payload2curl(payload)
                 if cmd:
