@@ -32,8 +32,8 @@ def payload2curl(p):
     for line in lines:
         if ":" in line:
             headers.append("-H '{}'".format(line))
-        if "Host:" in line:
-            host_header = re.search("^Host: (.*)", line)
+        if re.match("^Host:", line, re.I):
+            host_header = re.search("^Host: (.*)", line, re.I)
             host_name = host_header.group(1)
 
     proto_host = 'http://{}/'.format(host_name)
