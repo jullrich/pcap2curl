@@ -1,7 +1,18 @@
 #!/usr/bin/env python
 
+import argparse
 import sys
+
 from scapy.all import PcapReader, re, Raw, TCP
+
+arg_parser = argparse.ArgumentParser()
+arg_parser.add_argument('infile')
+arg_parser.add_argument('-p', '--port', type=int, default=80, required=False)
+args = arg_parser.parse_args()
+print(args.port, args.infile)
+
+infile = args.infile
+
 
 
 VALID_METHODS = [
@@ -45,19 +56,14 @@ def payload2curl(p):
 
 
 def main():
-    if len(sys.argv) != 2:
-        print ("I need an input file. Usage ./pcap2curl.py inputfilename")
-        return
-
-    infile = sys.argv[1]
-
     with PcapReader(infile) as packets:
         for p in packets:
-            if p.haslayer(TCP) and p.haslayer(Raw) and p[TCP].dport == 80:
+            if p.haslayer(TCP) and p.haslayer(Raw) and p[TCP].dport == args.port:
                 payload = p[Raw].load
                 cmd = payload2curl(payload)
                 if cmd:
                     print(cmd)
+                    print('\n')
 
 
 if __name__ == "__main__":
