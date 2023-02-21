@@ -9,4 +9,11 @@ Little effort is made to verify that the requests are valid. This is intended to
 
 DISCLAIMER: I am not a Python coder. I do not like Python. I have to use it once in a while because I love [Scapy](http://www.secdev.org/projects/scapy/).
 
+## Usage with docker
+```sh
+docker build . -t pcap2curl
+docker run -v /host/path/to/capture.pcap:/capture.pcap pcap2curl bash
+pcap2curl.py /capture.pcap
+```
+
 CREDIT: Stackoverflow
